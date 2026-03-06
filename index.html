@@ -6,322 +6,371 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+*{
+  box-sizing:border-box;
+}
 
 body{
-margin:0;
-font-family:Arial;
-background:#000;
-color:white;
-text-align:center;
-overflow:hidden;
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#000;
+  color:#fff;
+  text-align:center;
+  overflow:hidden;
 }
 
 .screen{
-display:none;
-height:100vh;
-justify-content:center;
-align-items:center;
-flex-direction:column;
-padding:20px;
+  display:none;
+  height:100vh;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  padding:20px;
 }
 
 .active{
-display:flex;
+  display:flex;
 }
-
-/* ŞİFRE EKRANI ARKA PLAN */
 
 #passwordScreen{
-background:
-linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)),
-url("81797.jpg");
-background-size:cover;
-background-position:center;
-background-repeat:no-repeat;
+  background:
+    linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)),
+    url("81797.jpg");
+  background-size:cover;
+  background-repeat:no-repeat;
+  background-position:75% center;
 }
 
-/* giriş kutusu */
-
 .loginBox{
-background:rgba(0,0,0,0.55);
-padding:30px;
-border-radius:15px;
+  background:rgba(0,0,0,0.45);
+  backdrop-filter:blur(3px);
+  padding:28px 22px;
+  border-radius:18px;
+  width:min(92vw, 380px);
+  box-shadow:0 10px 30px rgba(0,0,0,0.35);
 }
 
 input{
-padding:14px;
-font-size:18px;
-border-radius:8px;
-border:none;
-margin-top:10px;
-width:220px;
-text-align:center;
+  padding:14px;
+  font-size:18px;
+  border-radius:8px;
+  border:none;
+  margin-top:12px;
+  width:100%;
+  text-align:center;
+  outline:none;
 }
 
 button{
-padding:12px 20px;
-font-size:18px;
-margin-top:15px;
-border-radius:8px;
-border:none;
-cursor:pointer;
-background:#ff4d88;
-color:white;
+  padding:12px 20px;
+  font-size:18px;
+  margin-top:15px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  background:#ff4d88;
+  color:white;
+  width:100%;
 }
 
-/* mesaj kutusu */
+#welcomeScreen{
+  background:linear-gradient(180deg,#14060c,#000);
+}
 
 .messageBox{
-max-width:650px;
-background:rgba(255,255,255,0.08);
-padding:25px;
-border-radius:18px;
+  max-width:650px;
+  background:rgba(255,255,255,0.08);
+  padding:25px;
+  border-radius:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.35);
 }
 
-/* slideshow */
-
-img{
-max-width:92vw;
-max-height:72vh;
-object-fit:contain;
-border-radius:14px;
-box-shadow:0 10px 30px rgba(0,0,0,0.6);
+.timer{
+  margin-top:16px;
+  font-size:15px;
+  color:#ffd6e6;
 }
 
-/* galeri */
+.skipBtn{
+  display:none;
+  margin-top:18px;
+  background:#ffffff;
+  color:#111;
+  font-weight:bold;
+}
+
+.skipBtn.show{
+  display:block;
+}
+
+#slideshowScreen{
+  background:#000;
+}
+
+#slideImage{
+  max-width:92vw;
+  max-height:72vh;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  border-radius:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.6);
+  background:#111;
+}
 
 .gallery{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:10px;
-padding:10px;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  padding:10px;
+  width:100%;
+  max-width:1000px;
+  overflow:auto;
 }
 
 .gallery img{
-width:100%;
-height:170px;
-object-fit:cover;
+  width:100%;
+  height:170px;
+  object-fit:cover;
+  border-radius:12px;
 }
 
-/* konfeti */
-
 .confetti{
-position:fixed;
-top:-10px;
-width:8px;
-height:14px;
-animation:fall linear forwards;
+  position:fixed;
+  top:-10px;
+  width:8px;
+  height:14px;
+  animation:fall linear forwards;
+  z-index:999;
 }
 
 @keyframes fall{
-0%{transform:translateY(-10vh) rotate(0)}
-100%{transform:translateY(110vh) rotate(720deg)}
+  0%{transform:translateY(-10vh) rotate(0)}
+  100%{transform:translateY(110vh) rotate(720deg)}
 }
 
+@media (max-width:480px){
+  #passwordScreen{
+    background-position:78% center;
+  }
+}
 </style>
 </head>
 
 <body>
 
-<audio id="messageAudio" preload="auto">
-<source src="Ses001.m4a" type="audio/mp4">
+<audio id="messageAudio" preload="auto" playsinline>
+  <source src="Ses001.m4a" type="audio/mp4">
 </audio>
 
-<audio id="bgMusic" loop preload="auto">
-<source src="Ses009.m4a" type="audio/mp4">
+<audio id="bgMusic" loop preload="auto" playsinline>
+  <source src="Ses009.m4a" type="audio/mp4">
 </audio>
-
-<!-- ŞİFRE -->
 
 <div id="passwordScreen" class="screen active">
-
-<div class="loginBox">
-
-<h2>🔒 Şifreyi Gir</h2>
-
-<input type="password" id="passwordInput">
-
-<br>
-
-<button onclick="checkPassword()">Giriş</button>
-
+  <div class="loginBox">
+    <h2>🔒 Şifreyi Gir</h2>
+    <input type="password" id="passwordInput" placeholder="Şifre">
+    <button onclick="checkPassword()">Giriş</button>
+  </div>
 </div>
-
-</div>
-
-<!-- MESAJ -->
 
 <div id="welcomeScreen" class="screen">
+  <div class="messageBox">
+    <h2>🎉 Merhaba Ayşe Üzüm</h2>
+    <p>
+      Yaklaşık iki senedir arkadaşız. Hayatımda çok fazla arkadaşım olmadı ama sen onlardan tamamen farklısın.<br><br>
 
-<div class="messageBox">
+      Bazen biraz patavatsız olsan da, bazen kafana esince sinirlensen de ben kalbinin ne kadar temiz olduğunu biliyorum.
+      O yüzden sana hiç kırılmam.<br><br>
 
-<h2>🎉 Merhaba Ayşe Üzüm</h2>
+      Sonuçta birlikte çok uzun zaman geçirdik.
+      Arada kırgınlık da olur, dargınlık da… ama önemli olan yine konuşabilmek.<br><br>
 
-<p>
+      İyi ki arkadaşız, iyi ki doğdun Müzüü ❤️
+    </p>
 
-Yaklaşık iki senedir arkadaşız. Hayatımda çok fazla arkadaşım olmadı ama sen onlardan tamamen farklısın.<br><br>
-
-Bazen biraz patavatsız olsan da, bazen kafana esince sinirlensen de ben kalbinin ne kadar temiz olduğunu biliyorum.
-O yüzden sana hiç kırılmam.<br><br>
-
-Sonuçta birlikte çok uzun zaman geçirdik.
-Arada kırgınlık da olur, dargınlık da… ama önemli olan yine konuşabilmek.<br><br>
-
-İyi ki arkadaşız, iyi ki doğdun Müzüü ❤️
-
-</p>
-
+    <div class="timer" id="timerText">30 saniye boyunca bu ekran açık kalacak...</div>
+    <button id="skipButton" class="skipBtn" onclick="goToSlideshow()">Fotoğraflara Geç</button>
+  </div>
 </div>
-
-</div>
-
-<!-- SLIDESHOW -->
 
 <div id="slideshowScreen" class="screen">
-
-<img id="slideImage">
-
+  <img id="slideImage" src="" alt="Fotoğraf">
 </div>
 
-<!-- FINAL -->
-
 <div id="finalScreen" class="screen">
-
-<h1>🎂 Doğum Günün Kutlu Olsun 🎂</h1>
-
-<div class="gallery" id="gallery"></div>
-
+  <h1>🎂 Doğum Günün Kutlu Olsun 🎂</h1>
+  <div class="gallery" id="gallery"></div>
 </div>
 
 <script>
+const PASSWORD = "1234";
 
-const PASSWORD="1234"
+const IMAGES = [
+  "100.jpg","101.jpg","102.jpg","103.jpg","104.jpg","105.jpg",
+  "106.jpg","107.jpg","108.jpg","109.jpg","110.jpg","111.jpg",
+  "112.jpg","113.jpg","114.jpg","115.jpg","116.jpg","117.jpg",
+  "118.jpg","119.jpg","120.jpg","121.jpg","122.jpg",
+  "123.png","124.png","125.png","126.png"
+];
 
-const IMAGES=[
-
-"100.jpg","101.jpg","102.jpg","103.jpg","104.jpg","105.jpg",
-"106.jpg","107.jpg","108.jpg","109.jpg","110.jpg","111.jpg",
-"112.jpg","113.jpg","114.jpg","115.jpg","116.jpg","117.jpg",
-"118.jpg","119.jpg","120.jpg","121.jpg","122.jpg",
-"123.png","124.png","125.png","126.png"
-
-]
-
-let index=0
+let index = 0;
+let timerInterval = null;
+let canSkip = false;
+let slideshowStarted = false;
 
 function show(id){
-document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"))
-document.getElementById(id).classList.add("active")
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
 }
-
-/* ŞİFRE */
 
 function checkPassword(){
+  const pass = document.getElementById("passwordInput").value;
 
-if(document.getElementById("passwordInput").value===PASSWORD){
-
-show("welcomeScreen")
-
-launchConfetti()
-
-/* SES001 */
-
-const a=document.getElementById("messageAudio")
-
-a.load()
-
-a.play().catch(()=>{})
-
-/* 30 saniye */
-
-setTimeout(()=>{
-
-a.pause()
-
-startSlideshow()
-
-},30000)
-
-}else{
-
-alert("Şifre yanlış")
-
+  if(pass === PASSWORD){
+    startWelcome();
+  }else{
+    alert("Şifre yanlış");
+  }
 }
 
+function startWelcome(){
+  show("welcomeScreen");
+  launchConfetti();
+
+  canSkip = false;
+  slideshowStarted = false;
+
+  const skipButton = document.getElementById("skipButton");
+  const timerText = document.getElementById("timerText");
+  const msgAudio = document.getElementById("messageAudio");
+  const bgMusic = document.getElementById("bgMusic");
+
+  skipButton.classList.remove("show");
+  timerText.textContent = "30 saniye boyunca bu ekran açık kalacak...";
+
+  bgMusic.pause();
+  bgMusic.currentTime = 0;
+
+  msgAudio.pause();
+  msgAudio.currentTime = 0;
+  msgAudio.load();
+  msgAudio.play().catch(err => {
+    console.log("Ses001 çalmadı:", err);
+  });
+
+  startTimer(30);
+
+  setTimeout(() => {
+    canSkip = true;
+    skipButton.classList.add("show");
+    timerText.textContent = "İstersen fotoğraflara geçebilirsin, istersen müzik bitene kadar burada kalabilirsin.";
+  }, 30000);
+
+  msgAudio.onended = function(){
+    if(!slideshowStarted){
+      goToSlideshow();
+    }
+  };
 }
 
-/* CONFETTI */
+function startTimer(seconds){
+  const timerText = document.getElementById("timerText");
+  let remaining = seconds;
 
-function launchConfetti(){
+  timerText.textContent = `${remaining} saniye boyunca bu ekran açık kalacak...`;
 
-for(let i=0;i<100;i++){
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    remaining--;
 
-const c=document.createElement("div")
-
-c.className="confetti"
-
-c.style.left=Math.random()*100+"vw"
-
-c.style.background=["#ff4d88","#ffd166","#7bdff2","#ffffff"][Math.floor(Math.random()*4)]
-
-c.style.animationDuration=(Math.random()*2+3)+"s"
-
-document.body.appendChild(c)
-
-setTimeout(()=>c.remove(),5000)
-
+    if(remaining > 0){
+      timerText.textContent = `${remaining} saniye boyunca bu ekran açık kalacak...`;
+    }else{
+      clearInterval(timerInterval);
+    }
+  }, 1000);
 }
 
+function goToSlideshow(){
+  if(!canSkip && !hasMessageAudioEnded()){
+    return;
+  }
+
+  if(slideshowStarted){
+    return;
+  }
+
+  slideshowStarted = true;
+
+  const msgAudio = document.getElementById("messageAudio");
+  msgAudio.pause();
+  msgAudio.currentTime = 0;
+
+  startSlideshow();
 }
 
-/* SLIDESHOW */
+function hasMessageAudioEnded(){
+  const msgAudio = document.getElementById("messageAudio");
+  return msgAudio.ended;
+}
 
 function startSlideshow(){
+  show("slideshowScreen");
 
-show("slideshowScreen")
+  const bgMusic = document.getElementById("bgMusic");
+  bgMusic.pause();
+  bgMusic.currentTime = 0;
+  bgMusic.load();
+  bgMusic.play().catch(err => {
+    console.log("Ses009 çalmadı:", err);
+  });
 
-document.getElementById("bgMusic").play().catch(()=>{})
-
-showSlide()
-
+  showSlide();
 }
 
 function showSlide(){
+  if(index >= IMAGES.length){
+    showFinal();
+    return;
+  }
 
-if(index>=IMAGES.length){
-
-showFinal()
-
-return
-
-}
-
-document.getElementById("slideImage").src=IMAGES[index]
-
-index++
-
-setTimeout(showSlide,10000)
-
+  document.getElementById("slideImage").src = IMAGES[index];
+  index++;
+  setTimeout(showSlide, 10000);
 }
 
 function showFinal(){
+  show("finalScreen");
 
-show("finalScreen")
+  const g = document.getElementById("gallery");
+  g.innerHTML = "";
 
-const g=document.getElementById("gallery")
-
-IMAGES.forEach(src=>{
-
-const img=document.createElement("img")
-
-img.src=src
-
-g.appendChild(img)
-
-})
-
+  IMAGES.forEach(src => {
+    const img = document.createElement("img");
+    img.src = src;
+    g.appendChild(img);
+  });
 }
 
+function launchConfetti(){
+  for(let i = 0; i < 100; i++){
+    const c = document.createElement("div");
+    c.className = "confetti";
+    c.style.left = Math.random() * 100 + "vw";
+    c.style.background = ["#ff4d88","#ffd166","#7bdff2","#ffffff"][Math.floor(Math.random() * 4)];
+    c.style.animationDuration = (Math.random() * 2 + 3) + "s";
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 5000);
+  }
+}
+
+document.getElementById("passwordInput").addEventListener("keydown", function(e){
+  if(e.key === "Enter"){
+    checkPassword();
+  }
+});
 </script>
 
 </body>
