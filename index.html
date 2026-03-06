@@ -63,6 +63,12 @@
 
 <body>
 
+<!-- MÜZİK -->
+<audio id="bgMusic" loop>
+  <source src="music.mp3" type="audio/mpeg">
+  Tarayıcınız ses etiketini desteklemiyor.
+</audio>
+
 <!-- ŞİFRE -->
 <div id="passwordScreen" class="screen active">
   <h2>🔒 Şifreyi Gir</h2>
@@ -117,6 +123,12 @@ function show(id) {
 function checkPassword() {
   if (document.getElementById("passwordInput").value === PASSWORD) {
     show("welcomeScreen");
+
+    const music = document.getElementById("bgMusic");
+    music.play().catch(err => {
+      console.log("Müzik otomatik başlatılamadı:", err);
+    });
+
     setTimeout(startSlideshow, 7000);
   } else {
     alert("Şifre yanlış!");
@@ -142,6 +154,7 @@ function showSlide() {
 function showFinal() {
   show("finalScreen");
   const g = document.getElementById("gallery");
+  g.innerHTML = "";
   IMAGES.forEach(src => {
     const img = document.createElement("img");
     img.src = src;
@@ -151,4 +164,4 @@ function showFinal() {
 </script>
 
 </body>
-  </html>
+</html>
