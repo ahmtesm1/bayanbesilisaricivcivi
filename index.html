@@ -62,15 +62,14 @@ input{
 }
 
 button{
-  padding:12px 20px;
-  font-size:18px;
+  padding:12px 18px;
+  font-size:17px;
   margin-top:15px;
   border-radius:10px;
   border:none;
   cursor:pointer;
   background:#ff4d88;
   color:white;
-  width:100%;
 }
 
 #welcomeScreen{
@@ -100,22 +99,47 @@ button{
 }
 
 .skipBtn.show{
-  display:block;
+  display:inline-block;
 }
 
 #slideshowScreen{
   background:#000;
 }
 
+.slideWrap{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  width:100%;
+}
+
 #slideImage{
   max-width:92vw;
-  max-height:72vh;
+  max-height:68vh;
   width:auto;
   height:auto;
   object-fit:contain;
   border-radius:14px;
   box-shadow:0 10px 30px rgba(0,0,0,0.6);
   background:#111;
+}
+
+.slideCounter{
+  margin-top:14px;
+  font-size:15px;
+  color:#ffd6e6;
+}
+
+.slideButtons{
+  display:flex;
+  gap:12px;
+  margin-top:16px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+.slideButtons button{
+  min-width:120px;
 }
 
 .gallery{
@@ -153,18 +177,23 @@ button{
   #passwordScreen{
     background-position:78% center;
   }
+
+  .slideButtons button{
+    min-width:100px;
+    font-size:15px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<audio id="messageAudio" preload="auto" playsinline>
-  <source src="Ses001.m4a" type="audio/mp4">
+<audio id="introMusic" loop preload="auto" playsinline>
+  <source src="1.m4a" type="audio/mp4">
 </audio>
 
-<audio id="bgMusic" loop preload="auto" playsinline>
-  <source src="Ses009.m4a" type="audio/mp4">
+<audio id="slideMusic" loop preload="auto" playsinline>
+  <source src="2.m4a" type="audio/mp4">
 </audio>
 
 <div id="passwordScreen" class="screen active">
@@ -196,7 +225,15 @@ button{
 </div>
 
 <div id="slideshowScreen" class="screen">
-  <img id="slideImage" src="" alt="Fotoğraf">
+  <div class="slideWrap">
+    <img id="slideImage" src="" alt="Fotoğraf">
+    <div class="slideCounter" id="slideCounter"></div>
+
+    <div class="slideButtons">
+      <button onclick="prevSlide()">Önceki</button>
+      <button onclick="nextSlide()">Sonraki</button>
+    </div>
+  </div>
 </div>
 
 <div id="finalScreen" class="screen">
@@ -215,14 +252,24 @@ const IMAGES = [
   "123.png","124.png","125.png","126.png"
 ];
 
-let index = 0;
-let timerInterval = null;
+let currentSlide = 0;
 let canSkip = false;
 let slideshowStarted = false;
+let timerInterval = null;
 
 function show(id){
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
+}
+
+function startIntroMusic(){
+  const introMusic = document.getElementById("introMusic");
+  introMusic.pause();
+  introMusic.currentTime = 0;
+  introMusic.load();
+  introMusic.play().catch(err => {
+    console.log("1.m4a çalmadı:", err);
+  });
 }
 
 function checkPassword(){
@@ -244,22 +291,11 @@ function startWelcome(){
 
   const skipButton = document.getElementById("skipButton");
   const timerText = document.getElementById("timerText");
-  const msgAudio = document.getElementById("messageAudio");
-  const bgMusic = document.getElementById("bgMusic");
 
   skipButton.classList.remove("show");
   timerText.textContent = "30 saniye boyunca bu ekran açık kalacak...";
 
-  bgMusic.pause();
-  bgMusic.currentTime = 0;
-
-  msgAudio.pause();
-  msgAudio.currentTime = 0;
-  msgAudio.load();
-  msgAudio.play().catch(err => {
-    console.log("Ses001 çalmadı:", err);
-  });
-
+  startIntroMusic();
   startTimer(30);
 
   setTimeout(() => {
@@ -268,7 +304,8 @@ function startWelcome(){
     timerText.textContent = "İstersen fotoğraflara geçebilirsin, istersen müzik bitene kadar burada kalabilirsin.";
   }, 30000);
 
-  msgAudio.onended = function(){
+  const introMusic = document.getElementById("introMusic");
+  introMusic.onended = function(){
     if(!slideshowStarted){
       goToSlideshow();
     }
@@ -279,9 +316,9 @@ function startTimer(seconds){
   const timerText = document.getElementById("timerText");
   let remaining = seconds;
 
+  clearInterval(timerInterval);
   timerText.textContent = `${remaining} saniye boyunca bu ekran açık kalacak...`;
 
-  clearInterval(timerInterval);
   timerInterval = setInterval(() => {
     remaining--;
 
@@ -294,7 +331,9 @@ function startTimer(seconds){
 }
 
 function goToSlideshow(){
-  if(!canSkip && !hasMessageAudioEnded()){
+  const introMusic = document.getElementById("introMusic");
+
+  if(!canSkip && !introMusic.ended){
     return;
   }
 
@@ -304,41 +343,46 @@ function goToSlideshow(){
 
   slideshowStarted = true;
 
-  const msgAudio = document.getElementById("messageAudio");
-  msgAudio.pause();
-  msgAudio.currentTime = 0;
+  introMusic.pause();
+  introMusic.currentTime = 0;
 
   startSlideshow();
-}
-
-function hasMessageAudioEnded(){
-  const msgAudio = document.getElementById("messageAudio");
-  return msgAudio.ended;
 }
 
 function startSlideshow(){
   show("slideshowScreen");
 
-  const bgMusic = document.getElementById("bgMusic");
-  bgMusic.pause();
-  bgMusic.currentTime = 0;
-  bgMusic.load();
-  bgMusic.play().catch(err => {
-    console.log("Ses009 çalmadı:", err);
+  const slideMusic = document.getElementById("slideMusic");
+  slideMusic.pause();
+  slideMusic.currentTime = 0;
+  slideMusic.load();
+  slideMusic.play().catch(err => {
+    console.log("2.m4a çalmadı:", err);
   });
 
-  showSlide();
+  currentSlide = 0;
+  renderSlide();
 }
 
-function showSlide(){
-  if(index >= IMAGES.length){
-    showFinal();
-    return;
-  }
+function renderSlide(){
+  document.getElementById("slideImage").src = IMAGES[currentSlide];
+  document.getElementById("slideCounter").textContent = `${currentSlide + 1} / ${IMAGES.length}`;
+}
 
-  document.getElementById("slideImage").src = IMAGES[index];
-  index++;
-  setTimeout(showSlide, 10000);
+function nextSlide(){
+  if(currentSlide < IMAGES.length - 1){
+    currentSlide++;
+    renderSlide();
+  }else{
+    showFinal();
+  }
+}
+
+function prevSlide(){
+  if(currentSlide > 0){
+    currentSlide--;
+    renderSlide();
+  }
 }
 
 function showFinal(){
