@@ -6,7 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -37,7 +39,7 @@
         url("81797.jpg");
       background-size: cover;
       background-repeat: no-repeat;
-      background-position: 78% center;
+      background-position: 82% center;
     }
 
     .loginBox {
@@ -189,7 +191,7 @@
 
     @media (max-width: 480px) {
       #passwordScreen {
-        background-position: 82% center;
+        background-position: 84% center;
       }
 
       .slideButtons button {
@@ -202,11 +204,11 @@
 <body>
 
   <audio id="introMusic" preload="auto" playsinline>
-    <source src="1.mp3" type="audio/mpeg">
+    <source src="Wye Oak - Civilian (Official Video)(_NU-BcwG8dfM_).m4a" type="audio/mp4">
   </audio>
 
   <audio id="slideMusic" preload="auto" playsinline loop>
-    <source src="2.mp3" type="audio/mpeg">
+    <source src="Ses 009.m4a" type="audio/mp4">
   </audio>
 
   <div id="passwordScreen" class="screen active">
@@ -267,9 +269,10 @@
     let slideshowStarted = false;
     let timerInterval = null;
     let unlockStarted = false;
+    let skipUnlockTimeout = null;
 
     function show(id) {
-      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      document.querySelectorAll(".screen").forEach(screen => screen.classList.remove("active"));
       document.getElementById(id).classList.add("active");
     }
 
@@ -299,6 +302,9 @@
       const skipButton = document.getElementById("skipButton");
       const timerText = document.getElementById("timerText");
 
+      clearInterval(timerInterval);
+      clearTimeout(skipUnlockTimeout);
+
       skipButton.classList.remove("show");
       timerText.textContent = "30 saniye boyunca bu ekran açık kalacak...";
 
@@ -307,33 +313,39 @@
 
       introMusic.pause();
       introMusic.currentTime = 0;
+      introMusic.load();
 
       const playPromise = introMusic.play();
       if (playPromise !== undefined) {
         playPromise
           .then(() => {
-            console.log("1.mp3 başladı");
+            console.log("İlk müzik başladı");
           })
           .catch((err) => {
-            console.log("1.mp3 çalmadı:", err);
-            alert("1.mp3 çalmadı. Dosya adı veya tarayıcı sorunu olabilir.");
+            console.log("İlk müzik çalmadı:", err);
+            alert("İlk müzik açılmadı. Dosya adını ve uzantıyı kontrol et.");
           });
       }
 
       startTimer(30);
 
-      setTimeout(() => {
+      skipUnlockTimeout = setTimeout(() => {
         canSkip = true;
         skipButton.classList.add("show");
-        timerText.textContent = "İstersen fotoğraflara geçebilirsin.";
+        timerText.textContent = "İstersen fotoğraflara geçebilirsin, istersen müzik bitene kadar burada kalabilirsin.";
       }, 30000);
+
+      introMusic.onended = function() {
+        if (!slideshowStarted) {
+          goToSlideshow(true);
+        }
+      };
     }
 
     function startTimer(seconds) {
       const timerText = document.getElementById("timerText");
       let remaining = seconds;
 
-      clearInterval(timerInterval);
       timerText.textContent = `${remaining} saniye boyunca bu ekran açık kalacak...`;
 
       timerInterval = setInterval(() => {
@@ -347,13 +359,17 @@
       }, 1000);
     }
 
-    function goToSlideshow() {
-      if (!canSkip || slideshowStarted) return;
+    function goToSlideshow(force = false) {
+      if (slideshowStarted) return;
+      if (!force && !canSkip) return;
 
       slideshowStarted = true;
 
       const introMusic = document.getElementById("introMusic");
       const slideMusic = document.getElementById("slideMusic");
+
+      clearInterval(timerInterval);
+      clearTimeout(skipUnlockTimeout);
 
       introMusic.pause();
       introMusic.currentTime = 0;
@@ -362,11 +378,12 @@
 
       slideMusic.pause();
       slideMusic.currentTime = 0;
+      slideMusic.load();
 
       const playPromise = slideMusic.play();
       if (playPromise !== undefined) {
         playPromise.catch((err) => {
-          console.log("2.mp3 çalmadı:", err);
+          console.log("Fotoğraf müziği çalmadı:", err);
         });
       }
 
@@ -398,16 +415,17 @@
     function showFinal() {
       const slideMusic = document.getElementById("slideMusic");
       slideMusic.pause();
+      slideMusic.currentTime = 0;
 
       show("finalScreen");
 
-      const g = document.getElementById("gallery");
-      g.innerHTML = "";
+      const gallery = document.getElementById("gallery");
+      gallery.innerHTML = "";
 
       IMAGES.forEach(src => {
         const img = document.createElement("img");
         img.src = src;
-        g.appendChild(img);
+        gallery.appendChild(img);
       });
     }
 
@@ -415,14 +433,15 @@
       const colors = ["#ff4d88", "#ffd166", "#7bdff2", "#ffffff"];
 
       for (let i = 0; i < 100; i++) {
-        const c = document.createElement("div");
-        c.className = "confetti";
-        c.style.left = Math.random() * 100 + "vw";
-        c.style.background = colors[Math.floor(Math.random() * colors.length)];
-        c.style.animationDuration = (Math.random() * 2 + 3) + "s";
-        document.body.appendChild(c);
+        const confetti = document.createElement("div");
+        confetti.className = "confetti";
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDuration = (Math.random() * 2 + 3) + "s";
 
-        setTimeout(() => c.remove(), 5000);
+        document.body.appendChild(confetti);
+
+        setTimeout(() => confetti.remove(), 5000);
       }
     }
 
@@ -433,4 +452,4 @@
     });
   </script>
 </body>
-  </html>
+        </html>
