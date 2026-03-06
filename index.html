@@ -1,198 +1,487 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<title>Sürpriz 🎉</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>Sürpriz 🎉</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-body{
-margin:0;
-font-family:Arial, sans-serif;
-background:#000;
-color:#fff;
-text-align:center;
-}
+  <style>
+    *{
+      box-sizing:border-box;
+    }
 
-.screen{
-display:none;
-height:100vh;
-justify-content:center;
-align-items:center;
-flex-direction:column;
-padding:20px;
-}
+    body{
+      margin:0;
+      font-family:Arial, sans-serif;
+      background:#000;
+      color:#fff;
+      text-align:center;
+      overflow:hidden;
+    }
 
-.active{
-display:flex;
-}
+    .screen{
+      display:none;
+      min-height:100vh;
+      width:100%;
+      justify-content:center;
+      align-items:center;
+      flex-direction:column;
+      padding:20px;
+      position:relative;
+    }
 
-input{
-padding:12px;
-font-size:18px;
-border-radius:6px;
-border:none;
-margin-top:10px;
-}
+    .active{
+      display:flex;
+    }
 
-button{
-padding:12px 20px;
-font-size:18px;
-margin-top:15px;
-border-radius:6px;
-border:none;
-cursor:pointer;
-}
+    #passwordScreen{
+      background:linear-gradient(180deg,#000,#111);
+    }
 
-img{
-max-width:90%;
-max-height:80vh;
-border-radius:12px;
-}
+    .card{
+      width:min(92vw,430px);
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:18px;
+      padding:24px 18px;
+      box-shadow:0 10px 35px rgba(0,0,0,0.35);
+      backdrop-filter:blur(6px);
+    }
 
-.caption{
-margin-top:15px;
-font-size:20px;
-}
+    h1,h2,p{
+      margin:0;
+    }
 
-.gallery{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
-gap:10px;
-padding:10px;
-}
+    h2{
+      margin-bottom:12px;
+      font-size:28px;
+    }
 
-.gallery img{
-width:100%;
-height:auto;
-}
-</style>
+    input{
+      width:100%;
+      padding:14px;
+      font-size:18px;
+      border-radius:10px;
+      border:none;
+      margin-top:14px;
+      outline:none;
+      text-align:center;
+    }
+
+    button{
+      padding:13px 22px;
+      font-size:18px;
+      margin-top:14px;
+      border-radius:10px;
+      border:none;
+      cursor:pointer;
+      background:#ff4d88;
+      color:#fff;
+      font-weight:bold;
+    }
+
+    #welcomeScreen{
+      background:
+        radial-gradient(circle at top, rgba(255,80,120,0.22), transparent 35%),
+        linear-gradient(180deg, #12040b 0%, #000 100%);
+      overflow:hidden;
+    }
+
+    .message-box{
+      width:min(92vw,700px);
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.14);
+      border-radius:22px;
+      padding:24px 18px;
+      box-shadow:0 12px 40px rgba(0,0,0,0.45);
+      backdrop-filter:blur(6px);
+      z-index:2;
+    }
+
+    .message-box h2{
+      margin-bottom:18px;
+      color:#ffd2df;
+      font-size:30px;
+    }
+
+    .message-box p{
+      font-size:18px;
+      line-height:1.7;
+      color:#fff;
+    }
+
+    .timer{
+      margin-top:18px;
+      font-size:15px;
+      opacity:0.85;
+    }
+
+    #slideshowScreen{
+      background:
+        radial-gradient(circle at center, rgba(255,255,255,0.06), transparent 45%),
+        #000;
+      padding:18px 14px 28px;
+    }
+
+    .slide-wrap{
+      width:100%;
+      max-width:520px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+    }
+
+    #slideImage{
+      max-width:92vw;
+      max-height:72vh;
+      width:auto;
+      height:auto;
+      object-fit:contain;
+      border-radius:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.5);
+      border:1px solid rgba(255,255,255,0.08);
+      opacity:0;
+      transform:scale(0.985);
+      transition:opacity 0.8s ease, transform 0.8s ease;
+      background:#111;
+    }
+
+    #slideImage.show{
+      opacity:1;
+      transform:scale(1);
+    }
+
+    .caption{
+      margin-top:16px;
+      font-size:17px;
+      color:#f7d7e2;
+      min-height:24px;
+    }
+
+    .slide-counter{
+      margin-top:8px;
+      font-size:14px;
+      opacity:0.8;
+    }
+
+    #finalScreen{
+      background:linear-gradient(180deg,#12040b,#000);
+      padding-top:26px;
+      justify-content:flex-start;
+      overflow:auto;
+    }
+
+    #finalScreen h1{
+      font-size:34px;
+      margin-bottom:16px;
+      padding:0 10px;
+    }
+
+    .gallery{
+      width:100%;
+      max-width:1000px;
+      display:grid;
+      grid-template-columns:repeat(2, 1fr);
+      gap:10px;
+      padding:10px 12px 30px;
+    }
+
+    .gallery img{
+      width:100%;
+      height:180px;
+      object-fit:cover;
+      border-radius:12px;
+      box-shadow:0 8px 20px rgba(0,0,0,0.35);
+      display:block;
+    }
+
+    .confetti{
+      position:fixed;
+      top:-12px;
+      width:10px;
+      height:18px;
+      opacity:0.95;
+      animation:fall linear forwards;
+      z-index:1;
+      border-radius:2px;
+    }
+
+    @keyframes fall{
+      0%{
+        transform:translateY(-10vh) rotate(0deg);
+      }
+      100%{
+        transform:translateY(110vh) rotate(720deg);
+      }
+    }
+
+    @media (min-width:700px){
+      .gallery{
+        grid-template-columns:repeat(3,1fr);
+      }
+
+      .gallery img{
+        height:220px;
+      }
+    }
+  </style>
 </head>
-
 <body>
 
-<audio id="bgMusic" loop>
-<source src="Ses%20009.m4a" type="audio/mp4">
-</audio>
+  <!-- Mesaj ekranı sesi -->
+  <audio id="messageAudio">
+    <source src="Ses001.m4a" type="audio/mp4">
+  </audio>
 
-<div id="passwordScreen" class="screen active">
-<h2>🔒 Şifreyi Gir</h2>
-<input type="password" id="passwordInput" placeholder="Şifre">
-<button onclick="checkPassword()">Giriş</button>
-</div>
+  <!-- Slideshow sesi -->
+  <audio id="bgMusic" loop>
+    <source src="Ses%20009.m4a" type="audio/mp4">
+  </audio>
 
-<div id="welcomeScreen" class="screen">
-<h2>🎉 Tebrikler</h2>
-<p>
-Hayatınızda tanışabileceğiniz en müthiş kişiyle arkadaşsınız.<br>
-Bunu asla unutmayın ❤️
-</p>
-</div>
+  <div id="passwordScreen" class="screen active">
+    <div class="card">
+      <h2>🔒 Şifreyi Gir</h2>
+      <input type="password" id="passwordInput" placeholder="Şifre">
+      <button onclick="checkPassword()">Giriş</button>
+    </div>
+  </div>
 
-<div id="slideshowScreen" class="screen">
-<img id="slideImage" src="">
-<div class="caption" id="caption"></div>
-</div>
+  <div id="welcomeScreen" class="screen">
+    <div class="message-box">
+      <h2>🎉 Merhaba Ayşe Üzüm</h2>
+      <p>
+        Yaklaşık iki senedir arkadaşız. Hayatımda çok fazla arkadaşım olmadı ama sen onlardan tamamen farklısın.<br><br>
 
-<div id="finalScreen" class="screen">
-<h1>🎂 Doğum Günün Kutlu Olsun 🎂</h1>
-<div class="gallery" id="gallery"></div>
-</div>
+        Bazen biraz patavatsız olsan da, bazen kafana esince sinirlensen de ben kalbinin ne kadar temiz olduğunu biliyorum.
+        O yüzden sana hiç kırılmam.<br><br>
 
-<script>
+        Sonuçta birlikte çok uzun zaman geçirdik.
+        Arada kırgınlık da olur, dargınlık da… ama önemli olan yine konuşabilmek.<br><br>
 
-const PASSWORD="1234"
+        İyi ki arkadaşız, iyi ki doğdun Müzüü ❤️
+      </p>
+      <div class="timer" id="timerText">30 saniye sonra fotoğraflar başlayacak...</div>
+    </div>
+  </div>
 
-const IMAGES=[
-"Screenshot_20260130_170245_Gallery.jpg",
-"Screenshot_20260130_170256_Gallery.jpg",
-"Screenshot_20260130_170300_Gallery.jpg",
-"Screenshot_20260130_170401_Video Player.jpg",
-"Screenshot_20260130_170449_Video Player.jpg",
-"Screenshot_20260130_170503_Gallery.jpg",
-"Screenshot_20260130_170509_Gallery.jpg",
-"Screenshot_20260130_170539_Gallery.jpg",
-"Screenshot_20260130_170549_Gallery.jpg",
-"Screenshot_20260130_170730_Gallery.jpg",
-"Screenshot_20260130_170734_Gallery.jpg",
-"Screenshot_20260130_170743_Gallery.jpg"
-]
+  <div id="slideshowScreen" class="screen">
+    <div class="slide-wrap">
+      <img id="slideImage" src="" alt="Slayt fotoğrafı">
+      <div class="caption" id="caption"></div>
+      <div class="slide-counter" id="slideCounter"></div>
+    </div>
+  </div>
 
-let index=0
+  <div id="finalScreen" class="screen">
+    <h1>🎂 Doğum Günün Kutlu Olsun 🎂</h1>
+    <div class="gallery" id="gallery"></div>
+  </div>
 
-function show(id){
-document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"))
-document.getElementById(id).classList.add("active")
-}
+  <script>
+    const PASSWORD = "1234";
 
-function checkPassword(){
+    const IMAGES = [
+      "100.jpg",
+      "101.jpg",
+      "102.jpg",
+      "103.jpg",
+      "104.jpg",
+      "105.jpg",
+      "106.jpg",
+      "107.jpg",
+      "108.jpg",
+      "109.jpg",
+      "110.jpg",
+      "111.jpg",
+      "112.jpg",
+      "113.jpg",
+      "114.jpg",
+      "115.jpg",
+      "116.jpg",
+      "117.jpg",
+      "118.jpg",
+      "119.jpg",
+      "120.jpg",
+      "121.jpg",
+      "122.jpg",
+      "123.png",
+      "124.png",
+      "125.png",
+      "126.png"
+    ];
 
-if(document.getElementById("passwordInput").value===PASSWORD){
+    const CAPTIONS = [
+      "Birlikte geçen güzel anılar ❤️",
+      "Seninle her şey daha güzel ✨",
+      "İyi ki varsın 🌸",
+      "Bu an hep kalsın 💕",
+      "Gülüşün yeter 😊",
+      "Güzel bir anı daha 🎉",
+      "Canım arkadaşım 💖",
+      "İyi ki doğdun 🥳",
+      "Her zaman mutlu ol 🌷",
+      "En güzel anılar seninle 💫",
+      "Kalbin hep güzel kalsın ❤️",
+      "Bugün senin günün 🎂",
+      "Yüzün hep gülsün 😍",
+      "İyi ki arkadaşız 🤍",
+      "Hep böyle kal 🌹",
+      "Doğum günün kutlu olsun 🎈",
+      "Mutluluk hep seninle olsun 💝",
+      "En değerli anılar 📸",
+      "İyi ki hayatımdasın ❤️",
+      "Bugün çok özelsin ✨",
+      "Canım Müzüü 💕",
+      "Kalbimden bir parça 🌸",
+      "Güzel anılar bitmez 🫶",
+      "Her foto ayrı güzel 💖",
+      "İyi ki doğdun Ayşe 🎂",
+      "Mutlu yıllar 🥳",
+      "Hep gül hep mutlu ol ❤️"
+    ];
 
-show("welcomeScreen")
+    let index = 0;
+    let countdownInterval = null;
+    let slideTimeout = null;
 
-const music=document.getElementById("bgMusic")
-music.play()
+    function show(id){
+      document.querySelectorAll(".screen").forEach(screen => screen.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
 
-setTimeout(startSlideshow,7000)
+    function checkPassword(){
+      const input = document.getElementById("passwordInput").value.trim();
 
-}else{
+      if(input === PASSWORD){
+        startWelcomeSequence();
+      } else {
+        alert("Şifre yanlış!");
+      }
+    }
 
-alert("Şifre yanlış!")
+    function startWelcomeSequence(){
+      show("welcomeScreen");
+      launchConfetti(120);
 
-}
+      const messageAudio = document.getElementById("messageAudio");
+      const bgMusic = document.getElementById("bgMusic");
 
-}
+      bgMusic.pause();
+      bgMusic.currentTime = 0;
 
-function startSlideshow(){
+      messageAudio.currentTime = 0;
+      messageAudio.play().catch(() => {
+        console.log("Mesaj sesi otomatik başlamadı.");
+      });
 
-show("slideshowScreen")
+      startCountdown(30);
 
-showSlide()
+      setTimeout(() => {
+        messageAudio.pause();
+        messageAudio.currentTime = 0;
+        startSlideshow();
+      }, 30000);
+    }
 
-}
+    function startCountdown(seconds){
+      const timerText = document.getElementById("timerText");
+      let remaining = seconds;
 
-function showSlide(){
+      timerText.textContent = `${remaining} saniye sonra fotoğraflar başlayacak...`;
 
-if(index>=IMAGES.length){
+      clearInterval(countdownInterval);
+      countdownInterval = setInterval(() => {
+        remaining--;
 
-showFinal()
+        if(remaining > 0){
+          timerText.textContent = `${remaining} saniye sonra fotoğraflar başlayacak...`;
+        } else {
+          clearInterval(countdownInterval);
+          timerText.textContent = "Fotoğraflar başlıyor...";
+        }
+      }, 1000);
+    }
 
-return
+    function startSlideshow(){
+      show("slideshowScreen");
 
-}
+      const bgMusic = document.getElementById("bgMusic");
+      bgMusic.currentTime = 0;
+      bgMusic.play().catch(() => {
+        console.log("Slideshow müziği otomatik başlamadı.");
+      });
 
-document.getElementById("slideImage").src=IMAGES[index]
+      showSlide();
+    }
 
-document.getElementById("caption").innerText="Foto "+(index+1)
+    function showSlide(){
+      if(index >= IMAGES.length){
+        showFinal();
+        return;
+      }
 
-index++
+      const img = document.getElementById("slideImage");
+      const caption = document.getElementById("caption");
+      const counter = document.getElementById("slideCounter");
 
-setTimeout(showSlide,3000)
+      img.classList.remove("show");
 
-}
+      setTimeout(() => {
+        img.src = IMAGES[index];
+        img.onload = () => {
+          img.classList.add("show");
+        };
+        caption.textContent = CAPTIONS[index] || `Foto ${index + 1}`;
+        counter.textContent = `${index + 1} / ${IMAGES.length}`;
+        index++;
+      }, 200);
 
-function showFinal(){
+      clearTimeout(slideTimeout);
+      slideTimeout = setTimeout(showSlide, 10000);
+    }
 
-show("finalScreen")
+    function showFinal(){
+      show("finalScreen");
 
-const g=document.getElementById("gallery")
+      const g = document.getElementById("gallery");
+      g.innerHTML = "";
 
-g.innerHTML=""
+      IMAGES.forEach(src => {
+        const img = document.createElement("img");
+        img.src = src;
+        g.appendChild(img);
+      });
+    }
 
-IMAGES.forEach(src=>{
+    function launchConfetti(count){
+      const colors = ["#ff4d88", "#ffd166", "#7bdff2", "#b8f2e6", "#c77dff", "#ffffff"];
 
-const img=document.createElement("img")
+      for(let i = 0; i < count; i++){
+        const confetti = document.createElement("div");
+        confetti.className = "confetti";
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDuration = (Math.random() * 2 + 3) + "s";
+        confetti.style.opacity = Math.random() * 0.5 + 0.5;
+        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+        confetti.style.width = (Math.random() * 8 + 6) + "px";
+        confetti.style.height = (Math.random() * 14 + 10) + "px";
 
-img.src=src
+        document.body.appendChild(confetti);
 
-g.appendChild(img)
+        setTimeout(() => {
+          confetti.remove();
+        }, 5500);
+      }
+    }
 
-})
-
-}
-
-</script>
+    document.getElementById("passwordInput").addEventListener("keydown", function(e){
+      if(e.key === "Enter"){
+        checkPassword();
+      }
+    });
+  </script>
 
 </body>
-</html>
+  </html>
