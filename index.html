@@ -6,161 +6,192 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #000;
-    color: #fff;
-    text-align: center;
-  }
-  .screen {
-    display: none;
-    height: 100vh;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    padding: 20px;
-  }
-  .active {
-    display: flex;
-  }
-  input {
-    padding: 12px;
-    font-size: 18px;
-    border-radius: 6px;
-    border: none;
-    margin-top: 10px;
-  }
-  button {
-    padding: 12px 20px;
-    font-size: 18px;
-    margin-top: 15px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-  }
-  img {
-    max-width: 90%;
-    max-height: 80vh;
-    border-radius: 12px;
-  }
-  .caption {
-    margin-top: 15px;
-    font-size: 20px;
-  }
-  .gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 10px;
-    padding: 10px;
-  }
-  .gallery img {
-    width: 100%;
-    height: auto;
-  }
+body{
+margin:0;
+font-family:Arial, sans-serif;
+background:#000;
+color:#fff;
+text-align:center;
+}
+
+.screen{
+display:none;
+height:100vh;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+padding:20px;
+}
+
+.active{
+display:flex;
+}
+
+input{
+padding:12px;
+font-size:18px;
+border-radius:6px;
+border:none;
+margin-top:10px;
+}
+
+button{
+padding:12px 20px;
+font-size:18px;
+margin-top:15px;
+border-radius:6px;
+border:none;
+cursor:pointer;
+}
+
+img{
+max-width:90%;
+max-height:80vh;
+border-radius:12px;
+}
+
+.caption{
+margin-top:15px;
+font-size:20px;
+}
+
+.gallery{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+gap:10px;
+padding:10px;
+}
+
+.gallery img{
+width:100%;
+height:auto;
+}
 </style>
 </head>
 
 <body>
 
-<!-- MÜZİK -->
 <audio id="bgMusic" loop>
-  <source src="music.mp3" type="audio/mpeg">
-  Tarayıcınız ses etiketini desteklemiyor.
+<source src="Ses%20009.m4a" type="audio/mp4">
 </audio>
 
-<!-- ŞİFRE -->
 <div id="passwordScreen" class="screen active">
-  <h2>🔒 Şifreyi Gir</h2>
-  <input type="password" id="passwordInput" placeholder="Şifre">
-  <button onclick="checkPassword()">Giriş</button>
+<h2>🔒 Şifreyi Gir</h2>
+<input type="password" id="passwordInput" placeholder="Şifre">
+<button onclick="checkPassword()">Giriş</button>
 </div>
 
-<!-- TEBRİK -->
 <div id="welcomeScreen" class="screen">
-  <h2>🎉 Tebrikler</h2>
-  <p>Hayatınızda tanışabileceğiniz en müthiş kişiyle arkadaşsınız.  
-  Bunu asla unutmayın ❤️</p>
+<h2>🎉 Tebrikler</h2>
+<p>
+Hayatınızda tanışabileceğiniz en müthiş kişiyle arkadaşsınız.<br>
+Bunu asla unutmayın ❤️
+</p>
 </div>
 
-<!-- SLIDESHOW -->
 <div id="slideshowScreen" class="screen">
-  <img id="slideImage" src="">
-  <div class="caption" id="caption"></div>
+<img id="slideImage" src="">
+<div class="caption" id="caption"></div>
 </div>
 
-<!-- FİNAL -->
 <div id="finalScreen" class="screen">
-  <h1>🎂 Doğum Günün Kutlu Olsun 🎂</h1>
-  <div class="gallery" id="gallery"></div>
+<h1>🎂 Doğum Günün Kutlu Olsun 🎂</h1>
+<div class="gallery" id="gallery"></div>
 </div>
 
 <script>
-const PASSWORD = "1234";
 
-const IMAGES = [
-  "Screenshot_20260130_170245_Gallery.jpg",
-  "Screenshot_20260130_170256_Gallery.jpg",
-  "Screenshot_20260130_170300_Gallery.jpg",
-  "Screenshot_20260130_170401_Video Player.jpg",
-  "Screenshot_20260130_170449_Video Player.jpg",
-  "Screenshot_20260130_170503_Gallery.jpg",
-  "Screenshot_20260130_170509_Gallery.jpg",
-  "Screenshot_20260130_170539_Gallery.jpg",
-  "Screenshot_20260130_170549_Gallery.jpg",
-  "Screenshot_20260130_170730_Gallery.jpg",
-  "Screenshot_20260130_170734_Gallery.jpg",
-  "Screenshot_20260130_170743_Gallery.jpg"
-];
+const PASSWORD="1234"
 
-let index = 0;
+const IMAGES=[
+"Screenshot_20260130_170245_Gallery.jpg",
+"Screenshot_20260130_170256_Gallery.jpg",
+"Screenshot_20260130_170300_Gallery.jpg",
+"Screenshot_20260130_170401_Video Player.jpg",
+"Screenshot_20260130_170449_Video Player.jpg",
+"Screenshot_20260130_170503_Gallery.jpg",
+"Screenshot_20260130_170509_Gallery.jpg",
+"Screenshot_20260130_170539_Gallery.jpg",
+"Screenshot_20260130_170549_Gallery.jpg",
+"Screenshot_20260130_170730_Gallery.jpg",
+"Screenshot_20260130_170734_Gallery.jpg",
+"Screenshot_20260130_170743_Gallery.jpg"
+]
 
-function show(id) {
-  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+let index=0
+
+function show(id){
+document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"))
+document.getElementById(id).classList.add("active")
 }
 
-function checkPassword() {
-  if (document.getElementById("passwordInput").value === PASSWORD) {
-    show("welcomeScreen");
+function checkPassword(){
 
-    const music = document.getElementById("bgMusic");
-    music.play().catch(err => {
-      console.log("Müzik otomatik başlatılamadı:", err);
-    });
+if(document.getElementById("passwordInput").value===PASSWORD){
 
-    setTimeout(startSlideshow, 7000);
-  } else {
-    alert("Şifre yanlış!");
-  }
+show("welcomeScreen")
+
+const music=document.getElementById("bgMusic")
+music.play()
+
+setTimeout(startSlideshow,7000)
+
+}else{
+
+alert("Şifre yanlış!")
+
 }
 
-function startSlideshow() {
-  show("slideshowScreen");
-  showSlide();
 }
 
-function showSlide() {
-  if (index >= IMAGES.length) {
-    showFinal();
-    return;
-  }
-  document.getElementById("slideImage").src = IMAGES[index];
-  document.getElementById("caption").innerText = "Foto " + (index + 1);
-  index++;
-  setTimeout(showSlide, 10000);
+function startSlideshow(){
+
+show("slideshowScreen")
+
+showSlide()
+
 }
 
-function showFinal() {
-  show("finalScreen");
-  const g = document.getElementById("gallery");
-  g.innerHTML = "";
-  IMAGES.forEach(src => {
-    const img = document.createElement("img");
-    img.src = src;
-    g.appendChild(img);
-  });
+function showSlide(){
+
+if(index>=IMAGES.length){
+
+showFinal()
+
+return
+
 }
+
+document.getElementById("slideImage").src=IMAGES[index]
+
+document.getElementById("caption").innerText="Foto "+(index+1)
+
+index++
+
+setTimeout(showSlide,3000)
+
+}
+
+function showFinal(){
+
+show("finalScreen")
+
+const g=document.getElementById("gallery")
+
+g.innerHTML=""
+
+IMAGES.forEach(src=>{
+
+const img=document.createElement("img")
+
+img.src=src
+
+g.appendChild(img)
+
+})
+
+}
+
 </script>
 
 </body>
